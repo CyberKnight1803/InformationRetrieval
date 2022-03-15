@@ -1,4 +1,4 @@
-from utils.posting import Posting
+from lib.posting import Posting
 
 def createInvertedIndex(docs):
     inverted_index = {}

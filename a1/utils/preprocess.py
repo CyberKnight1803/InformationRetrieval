@@ -1,4 +1,4 @@
-import nltk 
+import re 
 from nltk.corpus import stopwords 
 from nltk.stem import PorterStemmer
 from nltk.tokenize import word_tokenize
@@ -30,11 +30,26 @@ def removeStopWords(tokens, stopwords=STOP_WORDS):
     filtered_tokens = [token for token in tokens if token not in stopwords]
     return filtered_tokens
 
+def removePunctuation(tokens, punctuations="!\"#$%&\'()*+,-./:;<=>?@[\]^_`{|}~"):
+    """
+        Returns tokens after removing punctuations
+    """
+    
+    clean_tokens = [re.sub('[%s]' % re.escape(punctuations), '', token) for token in tokens]
+    return clean_tokens
+
+
 def stemming(tokens):
+    """
+        Returns the stemmed version of tokens
+    """
     stemmed_tokens = [porter.stem(token) for token in tokens]
     return stemmed_tokens
 
 def lemmatization(tokens):
+    """
+        Returns lemmatized version of tokens
+    """
     pass 
 
 def getCleanDocs(docs, remove_stopwords=True, normalization_type="stemming"):
