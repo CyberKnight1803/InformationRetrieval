@@ -2,32 +2,48 @@ class BooleanModel:
 
     def __init__(
         self, 
+        corpus_size: int,
         inverted_index: dict
     ) -> None:
+
+        """
+            Initializing necessary parameters and indexes
+        """
+
+        self.corpus_size = corpus_size
         self.inverted_index = inverted_index
-        pass
+
     
     def _AND(self, lOp, rOp):
         """
-            Performs AND operation
+            Performs 'lOp AND rOp' operation
         """
 
-        pass   
+        lPostingList = self.inverted_index[lOp]
+        rPostingList = self.inverted_index[rOp]
+
+        return list(set(lPostingList) & set(rPostingList))
     
     def _OR(self, lOp, rOp):
         """
-            Performs OR operation
+            Performs 'lOp OR rOp' operation
         """
+        
+        lPosting  = self.inverted_index[lOp]
+        rPosting = self.inverted_index[rOp]
 
-        pass 
+        return list(set(lPosting) | set(rPosting))
+        
     
     def _NOT(self, Op):
         """
-            Performs NOT operation
+            Performs 'NOT Op' operation
         """
 
-        pass 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
+        docIDs = set(range(self.corpus_size))
+        return list(docIDs - set(self.inverted_index[Op])) 
+
+
     def parse_query(self, query):
         """
             Parsers the query and returns a pre-processed query
