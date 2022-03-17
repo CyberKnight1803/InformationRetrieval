@@ -2,49 +2,70 @@ import re
 from nltk.corpus import stopwords 
 from nltk.stem import PorterStemmer
 from nltk.tokenize import word_tokenize
+from nltk.metrics.distance import edit_distance
 
 # Stop words 
 STOP_WORDS = stopwords.words('english')
 porter = PorterStemmer()
 
-def lowerCaseText(s):
+# docs = {
+#   docID: {
+#        "zone-1": ["token-1", "token-2", ...] 
+#        "zone-2": ["token-1", "token-2", ...]
+#        "zone-3": ["token-1", "token-2", ...]
+#   }
+# }
+
+
+def lowerCaseText(docContent, zones=["title", "meta", "characters", "body"]):
     """
         Returns lowercased text
     """
 
-    assert type(s) == str, "ERROR: Strings Only!"
-    return s.lower()
+    for zone in zones:
+        docContent[zone] = docContent[zone].lower()
 
-def tokenize(content):
+    return docContent
+    
+
+def tokenize(docContent):
     """
         Returns list of tokens 
     """
+    docContent["title"] = word_tokenize(docContent["title"])
+    docContent["meta"] = word_tokenize(docContent["meta"])
+    docContent["characters"] = word_tokenize(docContent["characters"])
+    docContent["body"] = word_tokenize(docContent["body"])
+    return docContent
 
-    return word_tokenize(content)
-
-def removeStopWords(tokens, stopwords=STOP_WORDS):
+def removeStopWords(docContent, zones=["body"], stopwords=STOP_WORDS):
     """
         Returns the filtered tokens
     """ 
+    for zone in zones:
+        docContent[zone] = [token for token in docContent[zone] if token not in stopwords]
 
-    filtered_tokens = [token for token in tokens if token not in stopwords]
-    return filtered_tokens
+    return docContent
 
-def removePunctuation(tokens, punctuations="!\"#$%&\'()*+,-./:;<=>?@[\]^_`{|}~"):
+def removePunctuation(docContent, zones=["body"], punctuations="!\"#$%&\'()*+,-./:;<=>?@[\]^_`{|}~"):
     """
         Returns tokens after removing punctuations
     """
-    
-    clean_tokens = [re.sub('[%s]' % re.escape(punctuations), '', token) for token in tokens]
-    return clean_tokens
+    for zone in zones:
+        docContent[zone] = [re.sub('[%s]' % re.escape(punctuations), '', token) for token in docContent[zone]]
+
+    return docContent
 
 
-def stemming(tokens):
+def stemming(docContent, zones=["body"]):
     """
         Returns the stemmed version of tokens
     """
-    stemmed_tokens = [porter.stem(token) for token in tokens]
-    return stemmed_tokens
+
+    for zone in zones:
+        docContent[zone] = [porter.stem(token) for token in docContent[zone]]
+    
+    return zones
 
 def lemmatization(tokens):
     """
@@ -52,26 +73,32 @@ def lemmatization(tokens):
     """
     pass 
 
-def getCleanDocs(docs, remove_stopwords=True, normalization_type="stemming"):
+def getCleanDocs(docs, remove_stopwords=True, remove_puncuation=True, normalization_type="stemming"):
     """
         Pipelined preprocessing
     """
 
     for docID, docContent in docs.items():
         docs[docID] = lowerCaseText(docContent)
-        docs[docID] = word_tokenize(docs[docID])
+        docs[docID] = word_tokenize(docContent)
 
-    if remove_stopwords == True:
-        for docID, docTokens in docs.items():
-            docs[docID] = removeStopWords(docTokens)
+    if remove_stopwords:
+        for docID, docContent in docs.items():
+            docs[docID] = removeStopWords(docContent)
     
+    if remove_puncuation:
+        for docID, docContent in docs.items():
+            docs[docID] = removePunctuation(docContent)
+
     if normalization_type == "stemming":
-        for docID, docTokens in docs.items():
-            docs[docID] = stemming(docTokens)
+        for docID, docContent in docs.items():
+            docs[docID] = stemming(docContent)
     
     else:
-        for docID, docTokens in docs.items():
-            docs[docID] = lemmatization(docTokens)
+        for docID, docContent in docs.items():
+            docs[docID] = lemmatization(docContent)
 
 
     return docs
+
+    
