@@ -1,5 +1,14 @@
 import os 
 
+# docs = {
+#     0: {
+#         "title": "string",
+#         "meta": "", 
+#         "characters": "", 
+#         "body": ""
+#     } 
+# }
+
 def getFileNames(path_dataset):
     """
         Returns list of file-names
@@ -12,11 +21,7 @@ def getDocs():
     """
 
     docs = {
-        0: "Hello my name is Omkar",
-        1: "Omkar studies in BITS Pilani", 
-        2: "Famous slang of our campus is BITS Pilani its Magic", 
-        3: "Fee Hike BITS Pilani", 
-        4: "BITS Pilani Hyderabad campus has the latest infrastructure"
+        
     }
 
     return docs
