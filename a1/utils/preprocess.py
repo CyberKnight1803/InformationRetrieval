@@ -101,4 +101,6 @@ def getCleanDocs(docs, remove_stopwords=True, remove_puncuation=True, normalizat
 
     return docs
 
-    
+
+def getCleanQuery():
+    pass

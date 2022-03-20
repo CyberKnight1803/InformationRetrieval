@@ -45,7 +45,6 @@ def printZoneIndex(zone_index):
 
 def dummy_index():
     tokens = ["token_1", "token_2", "token_3"]
-
     zone_index = {}
 
     for token in tokens:
