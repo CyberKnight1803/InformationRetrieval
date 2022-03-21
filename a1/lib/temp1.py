@@ -18,9 +18,7 @@ for file in os.listdir():
         file_path =f"{file}"
     read_files(file_path)
 
-n = len(file)
-
-for i in range(n):
+for i in range(len(file)):
     data[i] = {}
     data[i]['title'] = (docs[i].split("\n")[0])
 
@@ -34,4 +32,18 @@ for i in range(n):
 
     data[i]['body'] = docs[i].split("\n",7)[-1]
 
-print(data)
+zone_index = {}
+
+for i in range(len(file)):
+    categories = ['title', 'meta', 'body']
+    for category in categories:
+        for word in data[i][category].split():
+            if word not in zone_index:
+                zone_index[word] = {
+                    "title": set(),
+                    "meta": set(),
+                    "body": set()
+                }
+            zone_index[word][category].add(i)
+
+print(zone_index['Dream'])
