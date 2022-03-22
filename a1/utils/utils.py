@@ -1,4 +1,4 @@
-import os 
+import os
 
 # docs = {
 #     0: {
@@ -15,13 +15,66 @@ def getFileNames(path_dataset):
     """
     return os.listdir(path_dataset)
 
-def getDocs():
+def getDoc(file_path):
+    """
+        Get zone wise doc content
+    """
+
+    content = ""
+    with open(file_path, 'r') as file:
+        for line in file:
+            content += line 
+
+    content = content.split("\n")
+
+    title = content[0]
+
+    content[1:8].remove("")
+    meta = " ".join(content[1:8])
+
+    characters = ""
+    body = ""
+
+    if "Characters in the Play" in content[7:]:
+        idx = content.index("Characters in the Play")
+        content = content[idx:]
+    else:
+        content[8:].remove("")
+        body = " ".join(content[8:])
+
+    body_zone_idx = content.index("")
+    if "" in content[:body_zone_idx]:
+        content[:body_zone_idx].remove("")
+    characters = " ".join(content[:body_zone_idx])
+
+    body_zone = content[body_zone_idx:]
+    if "" in body_zone:
+        body_zone.remove("")
+    body = " ".join(body_zone)
+
+    doc = {
+        "title": title, 
+        "meta": meta,
+        "characters": characters, 
+        "body": body
+    }
+
+    return doc 
+
+def getDocs(path_dataset):
     """
      Returns a dictionary with docID keys
     """
 
-    docs = {
-        
-    }
+    docs = {}
+
+    files = getFileNames(path_dataset)
+    docID = 0
+    for file in files:
+        file_path = f"{path_dataset}/{file}"
+        doc = getDoc(file_path)
+
+        docs.update({docID: doc})
+        docID += 1
 
     return docs

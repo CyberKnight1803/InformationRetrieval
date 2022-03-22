@@ -1,12 +1,14 @@
 import re 
 from nltk.corpus import stopwords 
-from nltk.stem import PorterStemmer
+from nltk.stem import PorterStemmer, WordNetLemmatizer
+
 from nltk.tokenize import word_tokenize
 from nltk.metrics.distance import edit_distance
 
 # Stop words 
 STOP_WORDS = stopwords.words('english')
 porter = PorterStemmer()
+lemmatizer = WordNetLemmatizer()
 
 # docs = {
 #   docID: {
@@ -33,26 +35,29 @@ def tokenize(docContent):
         Returns list of tokens 
     """
     docContent["title"] = word_tokenize(docContent["title"])
+
     docContent["meta"] = word_tokenize(docContent["meta"])
+
     docContent["characters"] = word_tokenize(docContent["characters"])
+
     docContent["body"] = word_tokenize(docContent["body"])
     return docContent
 
-def removeStopWords(docContent, zones=["body"], stopwords=STOP_WORDS):
+def removeStopWords(docContent, zones=["title", "meta", "characters", "body"], stop_words=STOP_WORDS):
     """
         Returns the filtered tokens
     """ 
     for zone in zones:
-        docContent[zone] = [token for token in docContent[zone] if token not in stopwords]
+        docContent[zone] = [token for token in docContent[zone] if token not in stop_words]
 
     return docContent
 
-def removePunctuation(docContent, zones=["body"], punctuations="!\"#$%&\'()*+,-./:;<=>?@[\]^_`{|}~"):
+def removePunctuation(docContent, zones=["title", "meta", "characters", "body"], punctuations="!\"#$%&\'()*+,-./:;<=>?@[\]^_`{|}~="):
     """
         Returns tokens after removing punctuations
     """
     for zone in zones:
-        docContent[zone] = [re.sub('[%s]' % re.escape(punctuations), '', token) for token in docContent[zone]]
+        docContent[zone] = re.sub('[%s]' % re.escape(punctuations), ' ', docContent[zone])
 
     return docContent
 
@@ -65,30 +70,33 @@ def stemming(docContent, zones=["body"]):
     for zone in zones:
         docContent[zone] = [porter.stem(token) for token in docContent[zone]]
     
-    return zones
+    return docContent
 
-def lemmatization(tokens):
+def lemmatization(docContent, zones=["body"]):
     """
         Returns lemmatized version of tokens
     """
-    pass 
+    for zone in zones:
+        docContent[zone] = [lemmatizer.lemmatize(token) for token in docContent[zone]]
+
+    return docContent
 
 def getCleanDocs(docs, remove_stopwords=True, remove_puncuation=True, normalization_type="stemming"):
     """
         Pipelined preprocessing
     """
 
+    if remove_puncuation:
+        for docID, docContent in docs.items():
+            docs[docID] = removePunctuation(docContent)
+
     for docID, docContent in docs.items():
         docs[docID] = lowerCaseText(docContent)
-        docs[docID] = word_tokenize(docContent)
+        docs[docID] = tokenize(docContent)
 
     if remove_stopwords:
         for docID, docContent in docs.items():
             docs[docID] = removeStopWords(docContent)
-    
-    if remove_puncuation:
-        for docID, docContent in docs.items():
-            docs[docID] = removePunctuation(docContent)
 
     if normalization_type == "stemming":
         for docID, docContent in docs.items():
@@ -97,10 +105,34 @@ def getCleanDocs(docs, remove_stopwords=True, remove_puncuation=True, normalizat
     else:
         for docID, docContent in docs.items():
             docs[docID] = lemmatization(docContent)
+        
+    
+    for docID, docContent in docs.items():
+        if "" in docContent["title"]:
+            docContent["title"].remove("")
+        
+        if "" in docContent["meta"]:
+            docContent["meta"].remove("")
+        
+        if "" in docContent["characters"]:
+            docContent["characters"].remove("")
 
+        if "" in docContent["body"]:
+            docContent["body"].remove("")
 
     return docs
 
+def getCleanQueryToken(token, normalization_type="stemming"):
+    
+    token = token.lower()
+    
+    # TODO -> spelling correction
 
-def getCleanQuery():
-    pass
+    if normalization_type == "stemming":
+        token = porter.stem(token)
+    
+    else:
+        token = lemmatizer.lemmatize(token)
+
+    return token
+

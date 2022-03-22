@@ -1,8 +1,7 @@
 import nltk 
 from nltk.tokenize import word_tokenize
 
-from zone_index import printZoneIndex
-from constants import dummy_zone_index
+from utils.preprocess import getCleanQueryToken
 class BooleanModel:
 
     def __init__(
@@ -76,7 +75,8 @@ class BooleanModel:
 
         for term in query:
             if (term not in self.operators) and (term != ')'):
-                operand_stack.append(self.inverted_index[term])
+                clean_token = getCleanQueryToken(term)
+                operand_stack.append(self.inverted_index[clean_token])
             
             elif term in self.operators:
                 operator_stack.append(term)
@@ -115,19 +115,10 @@ class BooleanModel:
             Processes the query and returns the result
         """
 
+
         tokenized_query = word_tokenize(query)
+
+        ### ADD remaining preprocessing steps for query
+
         return self.parse_query(tokenized_query)
 
-
-if __name__=="__main__":
-    
-    model = BooleanModel(corpus_size=30, inverted_index=dummy_zone_index)
-
-    
-    query = "((machine OR learning) AND NOT hello)"
-    result = model.process_query(query)
-
-    print("RESULT \n")
-    for zone in result.keys():
-            result[zone].sort()
-            print("{zone:<20}{list:<10}".format(zone=zone, list=str(result[zone])))
