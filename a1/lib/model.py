@@ -1,9 +1,7 @@
-import nltk 
 from nltk.tokenize import word_tokenize
-
 from utils.preprocess import getCleanQueryToken
-class BooleanModel:
 
+class BooleanModel:
     def __init__(
         self, 
         corpus_size: int,
@@ -18,6 +16,8 @@ class BooleanModel:
         self.inverted_index = inverted_index
         self.operators = ["AND", "OR", "NOT", "("]
 
+    def __str__(self) -> str:
+        return "Boolean Query Model"
     
     def _AND(self, lOp, rOp):
         """
@@ -114,11 +114,6 @@ class BooleanModel:
         """
             Processes the query and returns the result
         """
-
-
         tokenized_query = word_tokenize(query)
-
-        ### ADD remaining preprocessing steps for query
-
         return self.parse_query(tokenized_query)
 

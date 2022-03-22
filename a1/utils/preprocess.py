@@ -62,7 +62,7 @@ def removePunctuation(docContent, zones=["title", "meta", "characters", "body"],
     return docContent
 
 
-def stemming(docContent, zones=["body"]):
+def stemming(docContent, zones=["title", "meta", "characters", "body"]):
     """
         Returns the stemmed version of tokens
     """
@@ -72,7 +72,7 @@ def stemming(docContent, zones=["body"]):
     
     return docContent
 
-def lemmatization(docContent, zones=["body"]):
+def lemmatization(docContent, zones=["title", "meta", "characters", "body"]):
     """
         Returns lemmatized version of tokens
     """
@@ -102,7 +102,7 @@ def getCleanDocs(docs, remove_stopwords=True, remove_puncuation=True, normalizat
         for docID, docContent in docs.items():
             docs[docID] = stemming(docContent)
     
-    else:
+    elif normalization_type == "lemmatization":
         for docID, docContent in docs.items():
             docs[docID] = lemmatization(docContent)
         

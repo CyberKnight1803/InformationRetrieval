@@ -67,14 +67,39 @@ def getDocs(path_dataset):
     """
 
     docs = {}
+    doc_paths = []
 
     files = getFileNames(path_dataset)
     docID = 0
     for file in files:
         file_path = f"{path_dataset}/{file}"
+        doc_paths.append(file_path)
+
         doc = getDoc(file_path)
 
         docs.update({docID: doc})
         docID += 1
 
-    return docs
+    return docs, doc_paths
+
+
+def getResultFilePaths(result, zone, doc_paths):
+    """
+        get file paths for query results
+    """
+    result_paths = []
+
+    for docID in result[zone]:
+        result_paths.append(doc_paths[docID])
+    
+    return result_paths
+
+
+# Args utils
+
+def printDoc(doc):
+    for zone in doc.keys():
+        print("{zone:<15}{list:<10}".format(zone=zone, list=str(doc[zone])))
+        print("\n\n")
+        
+

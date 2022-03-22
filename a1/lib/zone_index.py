@@ -20,17 +20,15 @@ def createZoneIndex(docs):
         for zone in docContent.keys():
             for token in docContent[zone]:
                 if token in zone_index.keys():
-                    zone_index[token]["freq"] += 1
                     
                     if len(zone_index[token][zone]) == 0:
                         zone_index[token][zone].append(docID)
-                        
+
                     elif zone_index[token][zone][-1] != docID:
                         zone_index[token][zone].append(docID)
                 
                 else:
-                    zone_index.update({token: {
-                        "freq": 1, 
+                    zone_index.update({token: { 
                         "title": [], 
                         "meta": [], 
                         "characters": [],
@@ -40,13 +38,19 @@ def createZoneIndex(docs):
                     zone_index[token][zone].append(docID)
     return zone_index
 
-def printZoneIndex(zone_index):
+def printZoneIndex(zone_index, upto=10):
     """
         Prints zone index on console for visualization!
     """
     print("ZONE-INDEX")
 
+    row = 0
     for token, posting in zone_index.items():
-        for zone in posting.list.keys():
-            print("{token}.{zone:<20}{list:<10}".format(token=token, zone=zone, list=str(posting.list[zone])))
+        for zone in posting.keys():
+            print("{token}.{zone:<20}{list:<10}".format(token=token, zone=zone, list=str(posting[zone])))
+        
+        if (row == upto):
+            break
+
+        row += 1
         print("\n")
