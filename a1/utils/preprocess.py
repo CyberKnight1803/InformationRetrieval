@@ -1,5 +1,5 @@
 import re 
-from nltk.corpus import stopwords 
+from nltk.corpus import stopwords, words  
 from nltk.stem import PorterStemmer, WordNetLemmatizer
 
 from nltk.tokenize import word_tokenize
@@ -7,6 +7,8 @@ from nltk.metrics.distance import edit_distance
 
 # Stop words 
 STOP_WORDS = stopwords.words('english')
+CORRECT_WORDS = words.words()
+
 porter = PorterStemmer()
 lemmatizer = WordNetLemmatizer()
 
@@ -122,11 +124,23 @@ def getCleanDocs(docs, remove_stopwords=True, remove_puncuation=True, normalizat
 
     return docs
 
-def getCleanQueryToken(token, normalization_type="stemming"):
+
+def correctSpelling(token):
+    """
+        Spelling correction using Edit Distance method
+    """
+
+    possible_words = [(edit_distance(token, w), w) for w in CORRECT_WORDS if w[0] == token[0]]
+    correct_token = sorted(possible_words, key = lambda val: val[0])[0][1] 
+    return correct_token
+
+def getCleanQueryToken(token, normalization_type="stemming", spelling_correction=True):
     
     token = token.lower()
     
     # TODO -> spelling correction
+    if spelling_correction:
+        token = correctSpelling(token) 
 
     if normalization_type == "stemming":
         token = porter.stem(token)

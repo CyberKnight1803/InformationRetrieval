@@ -17,7 +17,16 @@ def normalBuild(args):
     zone_index = createZoneIndex(clean_docs)
     model = BooleanModel(corpus_size=len(clean_docs), inverted_index=zone_index)
     result = model.process_query(args.query)
-    print(result)
+
+    for zone in result.keys():
+        print("{zone:<20}{list:<10}".format(zone=zone, list=str(result[zone])))
+    
+    result_docIDs = list(set(result["title"]) | set(result["meta"]) | set(result["characters"]) | set(result["body"]))
+
+    print("\n FILES - ")
+    for docID in result_docIDs:
+        print(doc_paths[docID])
+
     return result
 
 def indexBuild(args):
@@ -97,6 +106,7 @@ if __name__=="__main__":
 
     if args.build == "normal":
         parser.add_argument("-q", "--query", type=str, required=True, help="Enter query")
+
     elif args.build != "wildcard":
         parser.add_argument("-f", "--file", type=str, default=None, help="File path")
 
