@@ -37,7 +37,8 @@ class BooleanModel:
     def __init__(
         self, 
         corpus_size: int,
-        inverted_index: dict
+        inverted_index: dict,
+        norm_type:str
     ) -&gt; None:
 
         &#34;&#34;&#34;
@@ -50,6 +51,7 @@ class BooleanModel:
         self.corpus_size = corpus_size
         self.inverted_index = inverted_index
         self.operators = [&#34;AND&#34;, &#34;OR&#34;, &#34;NOT&#34;, &#34;(&#34;]
+        self.normalization_type=norm_type
 
     def __str__(self) -&gt; str:
         return &#34;Boolean Query Model&#34;
@@ -117,8 +119,12 @@ class BooleanModel:
 
         for term in query:
             if (term not in self.operators) and (term != &#39;)&#39;):
-                clean_token = getCleanQueryToken(term)
-                operand_stack.append(self.inverted_index[clean_token])
+                clean_token = getCleanQueryToken(term, normalization_type=self.normalization_type)
+
+                if clean_token in self.inverted_index.keys():
+                    operand_stack.append(self.inverted_index[clean_token])
+                else:
+                    operand_stack.append({&#34;title&#34;: [], &#34;meta&#34;: [], &#34;characters&#34;: [], &#34;body&#34;: []})
             
             elif term in self.operators:
                 operator_stack.append(term)
@@ -177,7 +183,7 @@ class BooleanModel:
 <dl>
 <dt id="lib.model.BooleanModel"><code class="flex name class">
 <span>class <span class="ident">BooleanModel</span></span>
-<span>(</span><span>corpus_size: int, inverted_index: dict)</span>
+<span>(</span><span>corpus_size: int, inverted_index: dict, norm_type: str)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Traditional Boolean Query Model, handles - AND OR NOT operations</p>
@@ -196,7 +202,8 @@ operators: AND OR NOT (</p></div>
     def __init__(
         self, 
         corpus_size: int,
-        inverted_index: dict
+        inverted_index: dict,
+        norm_type:str
     ) -&gt; None:
 
         &#34;&#34;&#34;
@@ -209,6 +216,7 @@ operators: AND OR NOT (</p></div>
         self.corpus_size = corpus_size
         self.inverted_index = inverted_index
         self.operators = [&#34;AND&#34;, &#34;OR&#34;, &#34;NOT&#34;, &#34;(&#34;]
+        self.normalization_type=norm_type
 
     def __str__(self) -&gt; str:
         return &#34;Boolean Query Model&#34;
@@ -276,8 +284,12 @@ operators: AND OR NOT (</p></div>
 
         for term in query:
             if (term not in self.operators) and (term != &#39;)&#39;):
-                clean_token = getCleanQueryToken(term)
-                operand_stack.append(self.inverted_index[clean_token])
+                clean_token = getCleanQueryToken(term, normalization_type=self.normalization_type)
+
+                if clean_token in self.inverted_index.keys():
+                    operand_stack.append(self.inverted_index[clean_token])
+                else:
+                    operand_stack.append({&#34;title&#34;: [], &#34;meta&#34;: [], &#34;characters&#34;: [], &#34;body&#34;: []})
             
             elif term in self.operators:
                 operator_stack.append(term)
@@ -356,8 +368,12 @@ result of the operations</p></div>
 
     for term in query:
         if (term not in self.operators) and (term != &#39;)&#39;):
-            clean_token = getCleanQueryToken(term)
-            operand_stack.append(self.inverted_index[clean_token])
+            clean_token = getCleanQueryToken(term, normalization_type=self.normalization_type)
+
+            if clean_token in self.inverted_index.keys():
+                operand_stack.append(self.inverted_index[clean_token])
+            else:
+                operand_stack.append({&#34;title&#34;: [], &#34;meta&#34;: [], &#34;characters&#34;: [], &#34;body&#34;: []})
         
         elif term in self.operators:
             operator_stack.append(term)

@@ -92,7 +92,11 @@ class BooleanModel:
         for term in query:
             if (term not in self.operators) and (term != ')'):
                 clean_token = getCleanQueryToken(term, normalization_type=self.normalization_type)
-                operand_stack.append(self.inverted_index[clean_token])
+
+                if clean_token in self.inverted_index.keys():
+                    operand_stack.append(self.inverted_index[clean_token])
+                else:
+                    operand_stack.append({"title": [], "meta": [], "characters": [], "body": []})
             
             elif term in self.operators:
                 operator_stack.append(term)

@@ -4,6 +4,7 @@ import argparse
 from utils.utils import getDocs, printDoc
 from utils.preprocess import getCleanDocs, lemmatization, tokenize, removeStopWords, removePunctuation, stemming, lemmatization
 
+from lib.wildcard_search import processWildCardSearch, buildQuery 
 from lib.zone_index import createZoneIndex, printZoneIndex
 from lib.model import BooleanModel
 
@@ -75,7 +76,30 @@ def lemBuild(args):
     return docs
 
 def wildCardBuild(args):
-    pass 
+    docs, doc_paths = getDocs(PATH_DATASET)
+    clean_docs = getCleanDocs(docs)
+    zone_index = createZoneIndex(clean_docs)
+    vocab = list(zone_index.keys())
+
+    possible_words = processWildCardSearch(args.term, keys=vocab)
+    query = buildQuery(possible_words)
+
+    print(query)
+    model = BooleanModel(corpus_size=len(clean_docs), inverted_index=zone_index, norm_type=args.norm)
+    result = model.process_query(query)
+
+    for zone in result.keys():
+        print("{zone:<20}{list:<10}".format(zone=zone, list=str(sorted(result[zone]))))
+    
+    result_docIDs = list(set(result["title"]) | set(result["meta"]) | set(result["characters"]) | set(result["body"]))
+
+    print("\n FILES - ")
+    print("{docID:<15}{path:<15}".format(docID="docIDs", path="File Paths"))
+    for docID in sorted(result_docIDs):
+        print("{docID:<15}{doc_path:<15}".format(docID=docID, doc_path=doc_paths[docID]))
+
+    return result
+    
 
 def main(args):
     if args.build == "normal":
@@ -109,8 +133,12 @@ if __name__=="__main__":
         parser.add_argument("-q", "--query", type=str, required=True, help="Enter query")
         parser.add_argument("-norm", type=str, default="stemming", help="stemming or lemmatization")
 
-    if args.build == "index":
+    elif args.build == "index":
         parser.add_argument("--upto", type=int, default=8, help="Print upto how many tokens?")
+
+    elif args.build == "wildcard":
+        parser.add_argument("-t", "--term", type=str, required=True)
+        parser.add_argument("-norm", type=str, default="stemming", help="stemming or lemmatization")
 
     elif args.build != "wildcard":
         parser.add_argument("-f", "--file", type=str, default=None, help="File path")
