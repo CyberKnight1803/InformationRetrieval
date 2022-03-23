@@ -2,19 +2,28 @@ from nltk.tokenize import word_tokenize
 from utils.preprocess import getCleanQueryToken
 
 class BooleanModel:
+    """
+        Traditional Boolean Query Model, handles - AND OR NOT operations
+    """
+
     def __init__(
         self, 
         corpus_size: int,
-        inverted_index: dict
+        inverted_index: dict,
+        norm_type:str
     ) -> None:
 
         """
             Initializing necessary parameters and indexes
+            corpus_size: Number of documents 
+            operators: AND OR NOT (
         """
+
 
         self.corpus_size = corpus_size
         self.inverted_index = inverted_index
         self.operators = ["AND", "OR", "NOT", "("]
+        self.normalization_type=norm_type
 
     def __str__(self) -> str:
         return "Boolean Query Model"
@@ -68,6 +77,13 @@ class BooleanModel:
     def parse_query(self, query):
         """
             Parsers the query and returns a pre-processed query
+
+            Parameters -
+            query: query in tokenized format
+
+            Return-
+            result of the operations 
+
         """
 
         operand_stack = []
@@ -75,7 +91,7 @@ class BooleanModel:
 
         for term in query:
             if (term not in self.operators) and (term != ')'):
-                clean_token = getCleanQueryToken(term)
+                clean_token = getCleanQueryToken(term, normalization_type=self.normalization_type)
                 operand_stack.append(self.inverted_index[clean_token])
             
             elif term in self.operators:
@@ -113,7 +129,13 @@ class BooleanModel:
     def process_query(self, query):
         """
             Processes the query and returns the result
+            Parameters -
+            query: query in string
+
+            Return-
+            result of the operations
         """
+
         tokenized_query = word_tokenize(query)
         return self.parse_query(tokenized_query)
 

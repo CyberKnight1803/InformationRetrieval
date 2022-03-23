@@ -40,12 +40,21 @@
 def getFileNames(path_dataset):
     &#34;&#34;&#34;
         Returns list of file-names
+
+        Parameters:
+        path_dataset: Path to dataset
     &#34;&#34;&#34;
     return os.listdir(path_dataset)
 
 def getDoc(file_path):
     &#34;&#34;&#34;
         Get zone wise doc content
+
+        Parameters:
+        file_path: path to a certain document
+
+        Returns: 
+        document separated into 4 zones - title, meta, characters, body
     &#34;&#34;&#34;
 
     content = &#34;&#34;
@@ -91,7 +100,10 @@ def getDoc(file_path):
 
 def getDocs(path_dataset):
     &#34;&#34;&#34;
-     Returns a dictionary with docID keys
+    Returns a dictionary with docID keys and docContent segregated into zones 
+
+    Parameters:
+    path_dataset: Path to dataset 
     &#34;&#34;&#34;
 
     docs = {}
@@ -143,7 +155,11 @@ def printDoc(doc):
 <span>def <span class="ident">getDoc</span></span>(<span>file_path)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Get zone wise doc content</p></div>
+<div class="desc"><p>Get zone wise doc content</p>
+<p>Parameters:
+file_path: path to a certain document</p>
+<p>Returns:
+document separated into 4 zones - title, meta, characters, body</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -151,6 +167,12 @@ def printDoc(doc):
 <pre><code class="python">def getDoc(file_path):
     &#34;&#34;&#34;
         Get zone wise doc content
+
+        Parameters:
+        file_path: path to a certain document
+
+        Returns: 
+        document separated into 4 zones - title, meta, characters, body
     &#34;&#34;&#34;
 
     content = &#34;&#34;
@@ -199,14 +221,19 @@ def printDoc(doc):
 <span>def <span class="ident">getDocs</span></span>(<span>path_dataset)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns a dictionary with docID keys</p></div>
+<div class="desc"><p>Returns a dictionary with docID keys and docContent segregated into zones </p>
+<p>Parameters:
+path_dataset: Path to dataset</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def getDocs(path_dataset):
     &#34;&#34;&#34;
-     Returns a dictionary with docID keys
+    Returns a dictionary with docID keys and docContent segregated into zones 
+
+    Parameters:
+    path_dataset: Path to dataset 
     &#34;&#34;&#34;
 
     docs = {}
@@ -230,7 +257,9 @@ def printDoc(doc):
 <span>def <span class="ident">getFileNames</span></span>(<span>path_dataset)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns list of file-names</p></div>
+<div class="desc"><p>Returns list of file-names</p>
+<p>Parameters:
+path_dataset: Path to dataset</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -238,6 +267,9 @@ def printDoc(doc):
 <pre><code class="python">def getFileNames(path_dataset):
     &#34;&#34;&#34;
         Returns list of file-names
+
+        Parameters:
+        path_dataset: Path to dataset
     &#34;&#34;&#34;
     return os.listdir(path_dataset)</code></pre>
 </details>

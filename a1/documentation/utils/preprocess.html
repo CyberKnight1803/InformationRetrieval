@@ -49,9 +49,13 @@ lemmatizer = WordNetLemmatizer()
 # }
 
 
-def lowerCaseText(docContent, zones=[&#34;title&#34;, &#34;meta&#34;, &#34;characters&#34;, &#34;body&#34;]):
+def lowerCaseText(docContent: dict, zones=[&#34;title&#34;, &#34;meta&#34;, &#34;characters&#34;, &#34;body&#34;]) -&gt; dict:
     &#34;&#34;&#34;
         Returns lowercased text
+
+        Parameters:
+        docContent: contents of documents separated in zones
+        zones: List of zones in which we use this preprocessing method
     &#34;&#34;&#34;
 
     for zone in zones:
@@ -60,10 +64,14 @@ def lowerCaseText(docContent, zones=[&#34;title&#34;, &#34;meta&#34;, &#34;chara
     return docContent
     
 
-def tokenize(docContent):
+def tokenize(docContent: dict) -&gt; dict:
     &#34;&#34;&#34;
         Returns list of tokens 
+
+        Parameters:
+        docContent: contents of documents separated in zones
     &#34;&#34;&#34;
+
     docContent[&#34;title&#34;] = word_tokenize(docContent[&#34;title&#34;])
 
     docContent[&#34;meta&#34;] = word_tokenize(docContent[&#34;meta&#34;])
@@ -73,10 +81,16 @@ def tokenize(docContent):
     docContent[&#34;body&#34;] = word_tokenize(docContent[&#34;body&#34;])
     return docContent
 
-def removeStopWords(docContent, zones=[&#34;title&#34;, &#34;meta&#34;, &#34;characters&#34;, &#34;body&#34;], stop_words=STOP_WORDS):
+def removeStopWords(docContent: dict, zones=[&#34;title&#34;, &#34;meta&#34;, &#34;characters&#34;, &#34;body&#34;], stop_words=STOP_WORDS) -&gt; dict:
     &#34;&#34;&#34;
         Returns the filtered tokens
+
+        Parameters:
+        docContent: contents of documents separated in zones
+        zones: List of zones in which we use this preprocessing method
+        stop_words: List of stopwords 
     &#34;&#34;&#34; 
+
     for zone in zones:
         docContent[zone] = [token for token in docContent[zone] if token not in stop_words]
 
@@ -85,7 +99,13 @@ def removeStopWords(docContent, zones=[&#34;title&#34;, &#34;meta&#34;, &#34;cha
 def removePunctuation(docContent, zones=[&#34;title&#34;, &#34;meta&#34;, &#34;characters&#34;, &#34;body&#34;], punctuations=&#34;!\&#34;#$%&amp;\&#39;()*+,-./:;&lt;=&gt;?@[\]^_`{|}~=&#34;):
     &#34;&#34;&#34;
         Returns tokens after removing punctuations
+
+        Parameters:
+        docContent: contents of documents separated in zones
+        zones: List of zones in which we use this preprocessing method
+        punctuations: List of characters which we dont want to consider 
     &#34;&#34;&#34;
+
     for zone in zones:
         docContent[zone] = re.sub(&#39;[%s]&#39; % re.escape(punctuations), &#39; &#39;, docContent[zone])
 
@@ -95,6 +115,10 @@ def removePunctuation(docContent, zones=[&#34;title&#34;, &#34;meta&#34;, &#34;c
 def stemming(docContent, zones=[&#34;title&#34;, &#34;meta&#34;, &#34;characters&#34;, &#34;body&#34;]):
     &#34;&#34;&#34;
         Returns the stemmed version of tokens
+
+        Parameters:
+        docContent: contents of documents separated in zones
+        zones: List of zones in which we use this preprocessing method
     &#34;&#34;&#34;
 
     for zone in zones:
@@ -105,6 +129,10 @@ def stemming(docContent, zones=[&#34;title&#34;, &#34;meta&#34;, &#34;characters
 def lemmatization(docContent, zones=[&#34;title&#34;, &#34;meta&#34;, &#34;characters&#34;, &#34;body&#34;]):
     &#34;&#34;&#34;
         Returns lemmatized version of tokens
+
+        Parameters:
+        docContent: contents of documents separated in zones
+        zones: List of zones in which we use this preprocessing method
     &#34;&#34;&#34;
     for zone in zones:
         docContent[zone] = [lemmatizer.lemmatize(token) for token in docContent[zone]]
@@ -114,6 +142,15 @@ def lemmatization(docContent, zones=[&#34;title&#34;, &#34;meta&#34;, &#34;chara
 def getCleanDocs(docs, remove_stopwords=True, remove_puncuation=True, normalization_type=&#34;stemming&#34;):
     &#34;&#34;&#34;
         Pipelined preprocessing
+
+        Parameters:
+        docs: dictionary of docs 
+        remove_stopwords: if true removes stop_words 
+        remove_puncutation: if true removes puncuation 
+        normalization_type: if &#34;stemming&#34; will stem the tokens else if &#34;lemmatization&#34; will lemmatize the tokens
+
+        Returns:
+        clean_docs: Clean preprocessed documents in dictionary format
     &#34;&#34;&#34;
 
     if remove_puncuation:
@@ -156,6 +193,9 @@ def getCleanDocs(docs, remove_stopwords=True, remove_puncuation=True, normalizat
 def correctSpelling(token):
     &#34;&#34;&#34;
         Spelling correction using Edit Distance method
+
+        Parameter: 
+        token: Token in query
     &#34;&#34;&#34;
 
     possible_words = [(edit_distance(token, w), w) for w in CORRECT_WORDS if w[0] == token[0]]
@@ -163,6 +203,13 @@ def correctSpelling(token):
     return correct_token
 
 def getCleanQueryToken(token, normalization_type=&#34;stemming&#34;, spelling_correction=True):
+    &#34;&#34;&#34;
+        Preprocesses the token present in the query 
+
+        Parameters:
+        token: token in query
+        normalization_type: if &#34;stemming&#34; will stem the token else if &#34;lemmatization&#34; will lemmatize the token
+    &#34;&#34;&#34;
     
     token = token.lower()
     
@@ -173,7 +220,7 @@ def getCleanQueryToken(token, normalization_type=&#34;stemming&#34;, spelling_co
     if normalization_type == &#34;stemming&#34;:
         token = porter.stem(token)
     
-    else:
+    elif normalization_type == &#34;lemmatization&#34;:
         token = lemmatizer.lemmatize(token)
 
     return token</code></pre>
@@ -190,7 +237,9 @@ def getCleanQueryToken(token, normalization_type=&#34;stemming&#34;, spelling_co
 <span>def <span class="ident">correctSpelling</span></span>(<span>token)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Spelling correction using Edit Distance method</p></div>
+<div class="desc"><p>Spelling correction using Edit Distance method</p>
+<p>Parameter:
+token: Token in query</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -198,6 +247,9 @@ def getCleanQueryToken(token, normalization_type=&#34;stemming&#34;, spelling_co
 <pre><code class="python">def correctSpelling(token):
     &#34;&#34;&#34;
         Spelling correction using Edit Distance method
+
+        Parameter: 
+        token: Token in query
     &#34;&#34;&#34;
 
     possible_words = [(edit_distance(token, w), w) for w in CORRECT_WORDS if w[0] == token[0]]
@@ -209,7 +261,14 @@ def getCleanQueryToken(token, normalization_type=&#34;stemming&#34;, spelling_co
 <span>def <span class="ident">getCleanDocs</span></span>(<span>docs, remove_stopwords=True, remove_puncuation=True, normalization_type='stemming')</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Pipelined preprocessing</p></div>
+<div class="desc"><p>Pipelined preprocessing</p>
+<p>Parameters:
+docs: dictionary of docs
+remove_stopwords: if true removes stop_words
+remove_puncutation: if true removes puncuation
+normalization_type: if "stemming" will stem the tokens else if "lemmatization" will lemmatize the tokens</p>
+<p>Returns:
+clean_docs: Clean preprocessed documents in dictionary format</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -217,6 +276,15 @@ def getCleanQueryToken(token, normalization_type=&#34;stemming&#34;, spelling_co
 <pre><code class="python">def getCleanDocs(docs, remove_stopwords=True, remove_puncuation=True, normalization_type=&#34;stemming&#34;):
     &#34;&#34;&#34;
         Pipelined preprocessing
+
+        Parameters:
+        docs: dictionary of docs 
+        remove_stopwords: if true removes stop_words 
+        remove_puncutation: if true removes puncuation 
+        normalization_type: if &#34;stemming&#34; will stem the tokens else if &#34;lemmatization&#34; will lemmatize the tokens
+
+        Returns:
+        clean_docs: Clean preprocessed documents in dictionary format
     &#34;&#34;&#34;
 
     if remove_puncuation:
@@ -260,12 +328,22 @@ def getCleanQueryToken(token, normalization_type=&#34;stemming&#34;, spelling_co
 <span>def <span class="ident">getCleanQueryToken</span></span>(<span>token, normalization_type='stemming', spelling_correction=True)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Preprocesses the token present in the query </p>
+<p>Parameters:
+token: token in query
+normalization_type: if "stemming" will stem the token else if "lemmatization" will lemmatize the token</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def getCleanQueryToken(token, normalization_type=&#34;stemming&#34;, spelling_correction=True):
+    &#34;&#34;&#34;
+        Preprocesses the token present in the query 
+
+        Parameters:
+        token: token in query
+        normalization_type: if &#34;stemming&#34; will stem the token else if &#34;lemmatization&#34; will lemmatize the token
+    &#34;&#34;&#34;
     
     token = token.lower()
     
@@ -276,7 +354,7 @@ def getCleanQueryToken(token, normalization_type=&#34;stemming&#34;, spelling_co
     if normalization_type == &#34;stemming&#34;:
         token = porter.stem(token)
     
-    else:
+    elif normalization_type == &#34;lemmatization&#34;:
         token = lemmatizer.lemmatize(token)
 
     return token</code></pre>
@@ -286,7 +364,10 @@ def getCleanQueryToken(token, normalization_type=&#34;stemming&#34;, spelling_co
 <span>def <span class="ident">lemmatization</span></span>(<span>docContent, zones=['title', 'meta', 'characters', 'body'])</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns lemmatized version of tokens</p></div>
+<div class="desc"><p>Returns lemmatized version of tokens</p>
+<p>Parameters:
+docContent: contents of documents separated in zones
+zones: List of zones in which we use this preprocessing method</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -294,6 +375,10 @@ def getCleanQueryToken(token, normalization_type=&#34;stemming&#34;, spelling_co
 <pre><code class="python">def lemmatization(docContent, zones=[&#34;title&#34;, &#34;meta&#34;, &#34;characters&#34;, &#34;body&#34;]):
     &#34;&#34;&#34;
         Returns lemmatized version of tokens
+
+        Parameters:
+        docContent: contents of documents separated in zones
+        zones: List of zones in which we use this preprocessing method
     &#34;&#34;&#34;
     for zone in zones:
         docContent[zone] = [lemmatizer.lemmatize(token) for token in docContent[zone]]
@@ -302,17 +387,24 @@ def getCleanQueryToken(token, normalization_type=&#34;stemming&#34;, spelling_co
 </details>
 </dd>
 <dt id="utils.preprocess.lowerCaseText"><code class="name flex">
-<span>def <span class="ident">lowerCaseText</span></span>(<span>docContent, zones=['title', 'meta', 'characters', 'body'])</span>
+<span>def <span class="ident">lowerCaseText</span></span>(<span>docContent: dict, zones=['title', 'meta', 'characters', 'body']) ‑> dict</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns lowercased text</p></div>
+<div class="desc"><p>Returns lowercased text</p>
+<p>Parameters:
+docContent: contents of documents separated in zones
+zones: List of zones in which we use this preprocessing method</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def lowerCaseText(docContent, zones=[&#34;title&#34;, &#34;meta&#34;, &#34;characters&#34;, &#34;body&#34;]):
+<pre><code class="python">def lowerCaseText(docContent: dict, zones=[&#34;title&#34;, &#34;meta&#34;, &#34;characters&#34;, &#34;body&#34;]) -&gt; dict:
     &#34;&#34;&#34;
         Returns lowercased text
+
+        Parameters:
+        docContent: contents of documents separated in zones
+        zones: List of zones in which we use this preprocessing method
     &#34;&#34;&#34;
 
     for zone in zones:
@@ -325,7 +417,11 @@ def getCleanQueryToken(token, normalization_type=&#34;stemming&#34;, spelling_co
 <span>def <span class="ident">removePunctuation</span></span>(<span>docContent, zones=['title', 'meta', 'characters', 'body'], punctuations=&#x27;!&quot;#$%&amp;\&#x27;()*+,-./:;&lt;=&gt;?@[\\]^_`{|}~=&#x27;)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns tokens after removing punctuations</p></div>
+<div class="desc"><p>Returns tokens after removing punctuations</p>
+<p>Parameters:
+docContent: contents of documents separated in zones
+zones: List of zones in which we use this preprocessing method
+punctuations: List of characters which we dont want to consider</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -333,7 +429,13 @@ def getCleanQueryToken(token, normalization_type=&#34;stemming&#34;, spelling_co
 <pre><code class="python">def removePunctuation(docContent, zones=[&#34;title&#34;, &#34;meta&#34;, &#34;characters&#34;, &#34;body&#34;], punctuations=&#34;!\&#34;#$%&amp;\&#39;()*+,-./:;&lt;=&gt;?@[\]^_`{|}~=&#34;):
     &#34;&#34;&#34;
         Returns tokens after removing punctuations
+
+        Parameters:
+        docContent: contents of documents separated in zones
+        zones: List of zones in which we use this preprocessing method
+        punctuations: List of characters which we dont want to consider 
     &#34;&#34;&#34;
+
     for zone in zones:
         docContent[zone] = re.sub(&#39;[%s]&#39; % re.escape(punctuations), &#39; &#39;, docContent[zone])
 
@@ -341,18 +443,28 @@ def getCleanQueryToken(token, normalization_type=&#34;stemming&#34;, spelling_co
 </details>
 </dd>
 <dt id="utils.preprocess.removeStopWords"><code class="name flex">
-<span>def <span class="ident">removeStopWords</span></span>(<span>docContent, zones=['title', 'meta', 'characters', 'body'], stop_words=['i', 'me', 'my', 'myself', 'we', 'our', 'ours', 'ourselves', 'you', "you're", "you've", "you'll", "you'd", 'your', 'yours', 'yourself', 'yourselves', 'he', 'him', 'his', 'himself', 'she', "she's", 'her', 'hers', 'herself', 'it', "it's", 'its', 'itself', 'they', 'them', 'their', 'theirs', 'themselves', 'what', 'which', 'who', 'whom', 'this', 'that', "that'll", 'these', 'those', 'am', 'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'having', 'do', 'does', 'did', 'doing', 'a', 'an', 'the', 'and', 'but', 'if', 'or', 'because', 'as', 'until', 'while', 'of', 'at', 'by', 'for', 'with', 'about', 'against', 'between', 'into', 'through', 'during', 'before', 'after', 'above', 'below', 'to', 'from', 'up', 'down', 'in', 'out', 'on', 'off', 'over', 'under', 'again', 'further', 'then', 'once', 'here', 'there', 'when', 'where', 'why', 'how', 'all', 'any', 'both', 'each', 'few', 'more', 'most', 'other', 'some', 'such', 'no', 'nor', 'not', 'only', 'own', 'same', 'so', 'than', 'too', 'very', 's', 't', 'can', 'will', 'just', 'don', "don't", 'should', "should've", 'now', 'd', 'll', 'm', 'o', 're', 've', 'y', 'ain', 'aren', "aren't", 'couldn', "couldn't", 'didn', "didn't", 'doesn', "doesn't", 'hadn', "hadn't", 'hasn', "hasn't", 'haven', "haven't", 'isn', "isn't", 'ma', 'mightn', "mightn't", 'mustn', "mustn't", 'needn', "needn't", 'shan', "shan't", 'shouldn', "shouldn't", 'wasn', "wasn't", 'weren', "weren't", 'won', "won't", 'wouldn', "wouldn't"])</span>
+<span>def <span class="ident">removeStopWords</span></span>(<span>docContent: dict, zones=['title', 'meta', 'characters', 'body'], stop_words=['i', 'me', 'my', 'myself', 'we', 'our', 'ours', 'ourselves', 'you', "you're", "you've", "you'll", "you'd", 'your', 'yours', 'yourself', 'yourselves', 'he', 'him', 'his', 'himself', 'she', "she's", 'her', 'hers', 'herself', 'it', "it's", 'its', 'itself', 'they', 'them', 'their', 'theirs', 'themselves', 'what', 'which', 'who', 'whom', 'this', 'that', "that'll", 'these', 'those', 'am', 'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'having', 'do', 'does', 'did', 'doing', 'a', 'an', 'the', 'and', 'but', 'if', 'or', 'because', 'as', 'until', 'while', 'of', 'at', 'by', 'for', 'with', 'about', 'against', 'between', 'into', 'through', 'during', 'before', 'after', 'above', 'below', 'to', 'from', 'up', 'down', 'in', 'out', 'on', 'off', 'over', 'under', 'again', 'further', 'then', 'once', 'here', 'there', 'when', 'where', 'why', 'how', 'all', 'any', 'both', 'each', 'few', 'more', 'most', 'other', 'some', 'such', 'no', 'nor', 'not', 'only', 'own', 'same', 'so', 'than', 'too', 'very', 's', 't', 'can', 'will', 'just', 'don', "don't", 'should', "should've", 'now', 'd', 'll', 'm', 'o', 're', 've', 'y', 'ain', 'aren', "aren't", 'couldn', "couldn't", 'didn', "didn't", 'doesn', "doesn't", 'hadn', "hadn't", 'hasn', "hasn't", 'haven', "haven't", 'isn', "isn't", 'ma', 'mightn', "mightn't", 'mustn', "mustn't", 'needn', "needn't", 'shan', "shan't", 'shouldn', "shouldn't", 'wasn', "wasn't", 'weren', "weren't", 'won', "won't", 'wouldn', "wouldn't"]) ‑> dict</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns the filtered tokens</p></div>
+<div class="desc"><p>Returns the filtered tokens</p>
+<p>Parameters:
+docContent: contents of documents separated in zones
+zones: List of zones in which we use this preprocessing method
+stop_words: List of stopwords</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def removeStopWords(docContent, zones=[&#34;title&#34;, &#34;meta&#34;, &#34;characters&#34;, &#34;body&#34;], stop_words=STOP_WORDS):
+<pre><code class="python">def removeStopWords(docContent: dict, zones=[&#34;title&#34;, &#34;meta&#34;, &#34;characters&#34;, &#34;body&#34;], stop_words=STOP_WORDS) -&gt; dict:
     &#34;&#34;&#34;
         Returns the filtered tokens
+
+        Parameters:
+        docContent: contents of documents separated in zones
+        zones: List of zones in which we use this preprocessing method
+        stop_words: List of stopwords 
     &#34;&#34;&#34; 
+
     for zone in zones:
         docContent[zone] = [token for token in docContent[zone] if token not in stop_words]
 
@@ -363,7 +475,10 @@ def getCleanQueryToken(token, normalization_type=&#34;stemming&#34;, spelling_co
 <span>def <span class="ident">stemming</span></span>(<span>docContent, zones=['title', 'meta', 'characters', 'body'])</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns the stemmed version of tokens</p></div>
+<div class="desc"><p>Returns the stemmed version of tokens</p>
+<p>Parameters:
+docContent: contents of documents separated in zones
+zones: List of zones in which we use this preprocessing method</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -371,6 +486,10 @@ def getCleanQueryToken(token, normalization_type=&#34;stemming&#34;, spelling_co
 <pre><code class="python">def stemming(docContent, zones=[&#34;title&#34;, &#34;meta&#34;, &#34;characters&#34;, &#34;body&#34;]):
     &#34;&#34;&#34;
         Returns the stemmed version of tokens
+
+        Parameters:
+        docContent: contents of documents separated in zones
+        zones: List of zones in which we use this preprocessing method
     &#34;&#34;&#34;
 
     for zone in zones:
@@ -380,18 +499,24 @@ def getCleanQueryToken(token, normalization_type=&#34;stemming&#34;, spelling_co
 </details>
 </dd>
 <dt id="utils.preprocess.tokenize"><code class="name flex">
-<span>def <span class="ident">tokenize</span></span>(<span>docContent)</span>
+<span>def <span class="ident">tokenize</span></span>(<span>docContent: dict) ‑> dict</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns list of tokens</p></div>
+<div class="desc"><p>Returns list of tokens </p>
+<p>Parameters:
+docContent: contents of documents separated in zones</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def tokenize(docContent):
+<pre><code class="python">def tokenize(docContent: dict) -&gt; dict:
     &#34;&#34;&#34;
         Returns list of tokens 
+
+        Parameters:
+        docContent: contents of documents separated in zones
     &#34;&#34;&#34;
+
     docContent[&#34;title&#34;] = word_tokenize(docContent[&#34;title&#34;])
 
     docContent[&#34;meta&#34;] = word_tokenize(docContent[&#34;meta&#34;])

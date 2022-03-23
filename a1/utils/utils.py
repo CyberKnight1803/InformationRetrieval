@@ -12,12 +12,21 @@ import os
 def getFileNames(path_dataset):
     """
         Returns list of file-names
+
+        Parameters:
+        path_dataset: Path to dataset
     """
     return os.listdir(path_dataset)
 
 def getDoc(file_path):
     """
         Get zone wise doc content
+
+        Parameters:
+        file_path: path to a certain document
+
+        Returns: 
+        document separated into 4 zones - title, meta, characters, body
     """
 
     content = ""
@@ -63,7 +72,10 @@ def getDoc(file_path):
 
 def getDocs(path_dataset):
     """
-     Returns a dictionary with docID keys
+    Returns a dictionary with docID keys and docContent segregated into zones 
+
+    Parameters:
+    path_dataset: Path to dataset 
     """
 
     docs = {}

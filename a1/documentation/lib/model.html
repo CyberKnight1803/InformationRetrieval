@@ -30,6 +30,10 @@
 from utils.preprocess import getCleanQueryToken
 
 class BooleanModel:
+    &#34;&#34;&#34;
+        Traditional Boolean Query Model, handles - AND OR NOT operations
+    &#34;&#34;&#34;
+
     def __init__(
         self, 
         corpus_size: int,
@@ -38,7 +42,10 @@ class BooleanModel:
 
         &#34;&#34;&#34;
             Initializing necessary parameters and indexes
+            corpus_size: Number of documents 
+            operators: AND OR NOT (
         &#34;&#34;&#34;
+
 
         self.corpus_size = corpus_size
         self.inverted_index = inverted_index
@@ -96,6 +103,13 @@ class BooleanModel:
     def parse_query(self, query):
         &#34;&#34;&#34;
             Parsers the query and returns a pre-processed query
+
+            Parameters -
+            query: query in tokenized format
+
+            Return-
+            result of the operations 
+
         &#34;&#34;&#34;
 
         operand_stack = []
@@ -141,7 +155,13 @@ class BooleanModel:
     def process_query(self, query):
         &#34;&#34;&#34;
             Processes the query and returns the result
+            Parameters -
+            query: query in string
+
+            Return-
+            result of the operations
         &#34;&#34;&#34;
+
         tokenized_query = word_tokenize(query)
         return self.parse_query(tokenized_query)</code></pre>
 </details>
@@ -160,12 +180,19 @@ class BooleanModel:
 <span>(</span><span>corpus_size: int, inverted_index: dict)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Initializing necessary parameters and indexes</p></div>
+<div class="desc"><p>Traditional Boolean Query Model, handles - AND OR NOT operations</p>
+<p>Initializing necessary parameters and indexes
+corpus_size: Number of documents
+operators: AND OR NOT (</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class BooleanModel:
+    &#34;&#34;&#34;
+        Traditional Boolean Query Model, handles - AND OR NOT operations
+    &#34;&#34;&#34;
+
     def __init__(
         self, 
         corpus_size: int,
@@ -174,7 +201,10 @@ class BooleanModel:
 
         &#34;&#34;&#34;
             Initializing necessary parameters and indexes
+            corpus_size: Number of documents 
+            operators: AND OR NOT (
         &#34;&#34;&#34;
+
 
         self.corpus_size = corpus_size
         self.inverted_index = inverted_index
@@ -232,6 +262,13 @@ class BooleanModel:
     def parse_query(self, query):
         &#34;&#34;&#34;
             Parsers the query and returns a pre-processed query
+
+            Parameters -
+            query: query in tokenized format
+
+            Return-
+            result of the operations 
+
         &#34;&#34;&#34;
 
         operand_stack = []
@@ -277,7 +314,13 @@ class BooleanModel:
     def process_query(self, query):
         &#34;&#34;&#34;
             Processes the query and returns the result
+            Parameters -
+            query: query in string
+
+            Return-
+            result of the operations
         &#34;&#34;&#34;
+
         tokenized_query = word_tokenize(query)
         return self.parse_query(tokenized_query)</code></pre>
 </details>
@@ -287,7 +330,11 @@ class BooleanModel:
 <span>def <span class="ident">parse_query</span></span>(<span>self, query)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Parsers the query and returns a pre-processed query</p></div>
+<div class="desc"><p>Parsers the query and returns a pre-processed query</p>
+<p>Parameters -
+query: query in tokenized format</p>
+<p>Return-
+result of the operations</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -295,6 +342,13 @@ class BooleanModel:
 <pre><code class="python">def parse_query(self, query):
     &#34;&#34;&#34;
         Parsers the query and returns a pre-processed query
+
+        Parameters -
+        query: query in tokenized format
+
+        Return-
+        result of the operations 
+
     &#34;&#34;&#34;
 
     operand_stack = []
@@ -341,7 +395,11 @@ class BooleanModel:
 <span>def <span class="ident">process_query</span></span>(<span>self, query)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Processes the query and returns the result</p></div>
+<div class="desc"><p>Processes the query and returns the result
+Parameters -
+query: query in string</p>
+<p>Return-
+result of the operations</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -349,7 +407,13 @@ class BooleanModel:
 <pre><code class="python">def process_query(self, query):
     &#34;&#34;&#34;
         Processes the query and returns the result
+        Parameters -
+        query: query in string
+
+        Return-
+        result of the operations
     &#34;&#34;&#34;
+
     tokenized_query = word_tokenize(query)
     return self.parse_query(tokenized_query)</code></pre>
 </details>

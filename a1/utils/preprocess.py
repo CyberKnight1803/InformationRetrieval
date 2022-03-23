@@ -21,9 +21,13 @@ lemmatizer = WordNetLemmatizer()
 # }
 
 
-def lowerCaseText(docContent, zones=["title", "meta", "characters", "body"]):
+def lowerCaseText(docContent: dict, zones=["title", "meta", "characters", "body"]) -> dict:
     """
         Returns lowercased text
+
+        Parameters:
+        docContent: contents of documents separated in zones
+        zones: List of zones in which we use this preprocessing method
     """
 
     for zone in zones:
@@ -32,10 +36,14 @@ def lowerCaseText(docContent, zones=["title", "meta", "characters", "body"]):
     return docContent
     
 
-def tokenize(docContent):
+def tokenize(docContent: dict) -> dict:
     """
         Returns list of tokens 
+
+        Parameters:
+        docContent: contents of documents separated in zones
     """
+
     docContent["title"] = word_tokenize(docContent["title"])
 
     docContent["meta"] = word_tokenize(docContent["meta"])
@@ -45,10 +53,16 @@ def tokenize(docContent):
     docContent["body"] = word_tokenize(docContent["body"])
     return docContent
 
-def removeStopWords(docContent, zones=["title", "meta", "characters", "body"], stop_words=STOP_WORDS):
+def removeStopWords(docContent: dict, zones=["title", "meta", "characters", "body"], stop_words=STOP_WORDS) -> dict:
     """
         Returns the filtered tokens
+
+        Parameters:
+        docContent: contents of documents separated in zones
+        zones: List of zones in which we use this preprocessing method
+        stop_words: List of stopwords 
     """ 
+
     for zone in zones:
         docContent[zone] = [token for token in docContent[zone] if token not in stop_words]
 
@@ -57,7 +71,13 @@ def removeStopWords(docContent, zones=["title", "meta", "characters", "body"], s
 def removePunctuation(docContent, zones=["title", "meta", "characters", "body"], punctuations="!\"#$%&\'()*+,-./:;<=>?@[\]^_`{|}~="):
     """
         Returns tokens after removing punctuations
+
+        Parameters:
+        docContent: contents of documents separated in zones
+        zones: List of zones in which we use this preprocessing method
+        punctuations: List of characters which we dont want to consider 
     """
+
     for zone in zones:
         docContent[zone] = re.sub('[%s]' % re.escape(punctuations), ' ', docContent[zone])
 
@@ -67,6 +87,10 @@ def removePunctuation(docContent, zones=["title", "meta", "characters", "body"],
 def stemming(docContent, zones=["title", "meta", "characters", "body"]):
     """
         Returns the stemmed version of tokens
+
+        Parameters:
+        docContent: contents of documents separated in zones
+        zones: List of zones in which we use this preprocessing method
     """
 
     for zone in zones:
@@ -77,6 +101,10 @@ def stemming(docContent, zones=["title", "meta", "characters", "body"]):
 def lemmatization(docContent, zones=["title", "meta", "characters", "body"]):
     """
         Returns lemmatized version of tokens
+
+        Parameters:
+        docContent: contents of documents separated in zones
+        zones: List of zones in which we use this preprocessing method
     """
     for zone in zones:
         docContent[zone] = [lemmatizer.lemmatize(token) for token in docContent[zone]]
@@ -86,6 +114,15 @@ def lemmatization(docContent, zones=["title", "meta", "characters", "body"]):
 def getCleanDocs(docs, remove_stopwords=True, remove_puncuation=True, normalization_type="stemming"):
     """
         Pipelined preprocessing
+
+        Parameters:
+        docs: dictionary of docs 
+        remove_stopwords: if true removes stop_words 
+        remove_puncutation: if true removes puncuation 
+        normalization_type: if "stemming" will stem the tokens else if "lemmatization" will lemmatize the tokens
+
+        Returns:
+        clean_docs: Clean preprocessed documents in dictionary format
     """
 
     if remove_puncuation:
@@ -128,6 +165,9 @@ def getCleanDocs(docs, remove_stopwords=True, remove_puncuation=True, normalizat
 def correctSpelling(token):
     """
         Spelling correction using Edit Distance method
+
+        Parameter: 
+        token: Token in query
     """
 
     possible_words = [(edit_distance(token, w), w) for w in CORRECT_WORDS if w[0] == token[0]]
@@ -135,6 +175,13 @@ def correctSpelling(token):
     return correct_token
 
 def getCleanQueryToken(token, normalization_type="stemming", spelling_correction=True):
+    """
+        Preprocesses the token present in the query 
+
+        Parameters:
+        token: token in query
+        normalization_type: if "stemming" will stem the token else if "lemmatization" will lemmatize the token
+    """
     
     token = token.lower()
     
@@ -145,7 +192,7 @@ def getCleanQueryToken(token, normalization_type="stemming", spelling_correction
     if normalization_type == "stemming":
         token = porter.stem(token)
     
-    else:
+    elif normalization_type == "lemmatization":
         token = lemmatizer.lemmatize(token)
 
     return token

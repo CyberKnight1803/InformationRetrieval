@@ -41,6 +41,10 @@ def createZoneIndex(docs):
 def printZoneIndex(zone_index, upto=10):
     """
         Prints zone index on console for visualization!
+        
+        Parameters - 
+        zone_index: zone_index constructed from docs 
+        upto: Prints first 'upto' amount of tokens 
     """
     print("ZONE-INDEX")
 
