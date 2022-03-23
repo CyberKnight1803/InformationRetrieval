@@ -99,3 +99,5 @@ will ouput a tokenized preprofcessed doc afer using lemmatization
 
 ## Build option: wildcard 
 `python main.py -b wildcard -t "<token>"`
+
+Eg - `python main.py -b wildcard -t "he*"`
