@@ -3,8 +3,14 @@
 A simple tradional boolean query model which handles the `AND` `OR` `NOT` operations. 
 
 # How to run?
-
-
+* Different build options - 
+  1. normal 
+  2. index
+  3. stop_words
+  4. stemming
+  5. lemmatize
+  6. wildcard 
+   
 * NOTE: Default build option is normal
 
 ## Build option: Normal
